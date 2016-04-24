@@ -4,13 +4,14 @@
 
 part of taiga_api;
 
-class Resolver {
-  String uri = "resolver";
+class Resolver extends Endpoint with Authenticator {
+
+  Resolver(String apiUrl) : super(apiUrl, "resolver");
 
   Future<num> getProjectId(String name) async {
     http.Response response = await http.get(
         "$apiUrl/$uri?project=${Uri.encodeComponent(name)}",
-        headers: authHeader);
+        headers: auth.authHeader);
     if (response.statusCode == HttpStatus.OK) {
       Map body = JSON.decode(response.body);
       return body["project"] as num;

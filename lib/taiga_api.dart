@@ -13,3 +13,4 @@ import "package:http/http.dart" as http;
 part "src/core.dart";
 part "src/resolver.dart";
 part "src/auth.dart";
+part "src/milestones.dart";

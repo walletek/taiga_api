@@ -4,18 +4,31 @@
 
 part of taiga_api;
 
-String get apiUrl => "https://api.taiga.io/api/v1";
-
 Map<String, String> get defaultHeader => {"Content-Type": "application/json"};
-Map<String, String> get authHeader =>
-    defaultHeader..addAll({"Authorization": "Bearer ${Auth.authToken}"});
 
 class TaigaApi {
   Auth auth;
   Resolver resolver;
+  Milestones milestones;
 
-  TaigaApi() {
-    auth = new Auth();
-    resolver = new Resolver();
+  TaigaApi({ String apiUrl: "https://api.taiga.io/api/v1" }){
+    auth = new Auth(apiUrl);
+    resolver = new Resolver(apiUrl);
+    milestones = new Milestones(apiUrl);
+
+    resolver.auth = auth;
+    milestones.auth = auth;
   }
+}
+
+abstract class Endpoint {
+  String apiUrl;
+  String uri;
+
+  Endpoint(this.apiUrl, this.uri);
+
+}
+
+abstract class Authenticator {
+  Auth auth;
 }
