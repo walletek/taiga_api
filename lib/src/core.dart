@@ -25,6 +25,18 @@ abstract class Endpoint {
   String apiUrl;
   String uri;
 
+  String getUrl({Map parameters}) {
+    String url = "$apiUrl/$uri";
+    if (parameters != null && parameters.isNotEmpty) {
+      url += "?";
+      parameters.forEach((key, value) {
+        url += "${Uri.encodeQueryComponent(key)}=${Uri.encodeQueryComponent(value)}&";
+      });
+      return url.substring(0, url.length- 1);
+    }
+   return url;
+  }
+
   Endpoint(this.apiUrl, this.uri);
 
 }

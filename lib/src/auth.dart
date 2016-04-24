@@ -15,8 +15,8 @@ class Auth extends Endpoint {
     Auth(String apiUrl) : super(apiUrl, "auth");
 
     login(String username, String password, {String type: "normal"}) async {
-        http.Response response = await http.post("$apiUrl/$uri",
-            body: {"type": type, "password": password, "username": username}, headers: defaultHeader);
+        http.Response response = await http.post(getUrl(),
+            body: JSON.encode({"type": type, "password": password, "username": username}), headers: defaultHeader);
         if (response.statusCode == HttpStatus.OK) {
             _authResponse = JSON.decode(response.body);
         }
