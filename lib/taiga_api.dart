@@ -14,3 +14,6 @@ part "src/core.dart";
 part "src/resolver.dart";
 part "src/auth.dart";
 part "src/milestones.dart";
+part "src/users.dart";
+part "src/list_behavior.dart";
+part 'src/issue.dart';

@@ -4,17 +4,14 @@
 
 part of taiga_api;
 
-class Milestones extends Endpoint with Authenticator {
-
+class Milestones extends Endpoint with Authenticator, ListBehavior {
     Milestones(String apiUrl) : super(apiUrl, "milestones");
 
-    Future<List> list() async {
-        http.Response response = await http.get(getUrl(), headers: auth.authHeader);
+    Future<Map> get(num id) async {
+        http.Response response = await http.get("${getUrl()}/$id", headers: auth.authHeader);
         if (response.statusCode == HttpStatus.OK) {
-            return JSON.decode(response.body) as List<Map>;
+            return JSON.decode(response.body) as Map;
         }
         return null;
     }
-
-
 }

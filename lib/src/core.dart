@@ -10,14 +10,20 @@ class TaigaApi {
   Auth auth;
   Resolver resolver;
   Milestones milestones;
+  Users users;
+  Issues issues;
 
   TaigaApi({ String apiUrl: "https://api.taiga.io/api/v1" }){
     auth = new Auth(apiUrl);
     resolver = new Resolver(apiUrl);
     milestones = new Milestones(apiUrl);
+    users = new Users(apiUrl);
+    issues = new Issues(apiUrl);
 
     resolver.auth = auth;
     milestones.auth = auth;
+    users.auth = auth;
+    issues.auth = auth;
   }
 }
 
@@ -30,9 +36,9 @@ abstract class Endpoint {
     if (parameters != null && parameters.isNotEmpty) {
       url += "?";
       parameters.forEach((key, value) {
-        url += "${Uri.encodeQueryComponent(key)}=${Uri.encodeQueryComponent(value)}&";
+        url += "${Uri.encodeQueryComponent(key)}=$value&";
       });
-      return url.substring(0, url.length- 1);
+      //return url.substring(0, url.length - 1);
     }
    return url;
   }

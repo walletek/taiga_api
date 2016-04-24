@@ -16,4 +16,13 @@ class Resolver extends Endpoint with Authenticator {
     }
     return null;
   }
+
+  Future<Map> getMilestoneId(String project, String name) async {
+    http.Response response = await http
+        .get(getUrl(parameters: {"project": project, "milestone": name}), headers: auth.authHeader);
+    if (response.statusCode == HttpStatus.OK) {
+      return JSON.decode(response.body);
+    }
+    return null;
+  }
 }
