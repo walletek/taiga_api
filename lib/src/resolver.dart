@@ -13,6 +13,8 @@ class Resolver extends Endpoint with Authenticator {
     if (response.statusCode == HttpStatus.OK) {
       Map body = JSON.decode(response.body);
       return body["project"] as num;
+    } else {
+      print({ "status": response.statusCode, "body": response.body });
     }
     return null;
   }
@@ -22,6 +24,8 @@ class Resolver extends Endpoint with Authenticator {
         .get(getUrl(parameters: {"project": project, "milestone": name}), headers: auth.authHeader);
     if (response.statusCode == HttpStatus.OK) {
       return JSON.decode(response.body);
+    } else {
+      print({ "status": response.statusCode, "body": response.body });
     }
     return null;
   }

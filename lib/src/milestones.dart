@@ -12,7 +12,7 @@ class Milestones extends Endpoint with Authenticator, ListBehavior {
         if (response.statusCode == HttpStatus.OK) {
             return JSON.decode(response.body) as Map;
         } else {
-            print(response);
+            print({ "status": response.statusCode, "body": response.body });
         }
         return null;
     }

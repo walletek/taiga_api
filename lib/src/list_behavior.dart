@@ -11,7 +11,7 @@ abstract class ListBehavior implements Endpoint, Authenticator {
         if (response.statusCode == HttpStatus.OK) {
             return JSON.decode(response.body) as List<Map>;
         } else {
-           print(response);
+            print({ "status": response.statusCode, "body": response.body });
         }
         return null;
     }
