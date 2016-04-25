@@ -11,6 +11,8 @@ class Milestones extends Endpoint with Authenticator, ListBehavior {
         http.Response response = await http.get("${getUrl()}/$id", headers: auth.authHeader);
         if (response.statusCode == HttpStatus.OK) {
             return JSON.decode(response.body) as Map;
+        } else {
+            print(response);
         }
         return null;
     }
