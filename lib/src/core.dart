@@ -12,6 +12,7 @@ class TaigaApi {
   Milestones milestones;
   Users users;
   Issues issues;
+  Feedbacks feedbacks;
 
   TaigaApi({ String apiUrl: "https://api.taiga.io/api/v1" }){
     auth = new Auth(apiUrl);
@@ -19,11 +20,14 @@ class TaigaApi {
     milestones = new Milestones(apiUrl);
     users = new Users(apiUrl);
     issues = new Issues(apiUrl);
+    feedbacks = new Feedbacks(apiUrl);
+
 
     resolver.auth = auth;
     milestones.auth = auth;
     users.auth = auth;
     issues.auth = auth;
+    feedbacks.auth = auth;
   }
 }
 
