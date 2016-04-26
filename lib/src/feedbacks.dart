@@ -7,8 +7,7 @@ part of taiga_api;
 class Feedbacks extends Endpoint with Authenticator {
   Feedbacks(String apiUrl) : super(apiUrl, "feedback");
 
-    Future <num> pushFeedback(String comment) async {
-    print (auth.authHeader);
+  Future <num> pushFeedback(String comment) async {
     http.Response response = await http.post(getUrl(),
     body: JSON
     .encode({"comment": comment}),
@@ -16,6 +15,6 @@ class Feedbacks extends Endpoint with Authenticator {
     if (response.statusCode != HttpStatus.OK) {
       print({"status": response.statusCode, "body": response.body});
     }
-      return response.statusCode;
+    return response.statusCode;
   }
 }
