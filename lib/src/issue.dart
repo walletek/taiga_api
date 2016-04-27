@@ -4,17 +4,17 @@
 
 part of taiga_api;
 
-class Issues extends Endpoint with Authenticator, ListBehavior {
-  Issues(String apiUrl) : super(apiUrl, "issues");
+class Issues extends CoffeeRequestBehavior with ListBehavior {
+Get get _listRequest => _request["list"];
 
-  Future <num> pushIssue(String project, String subject, String description, String type) async {
-    http.Response response = await http.post(getUrl(),
-    body: JSON
-    .encode({"project": project, "subject": subject, "description": description, "tags": type }),
-    headers: auth.authHeader);
-    if (response.statusCode != HttpStatus.CREATED) {
-      print({"status": response.statusCode, "body": response.body});
-    }
-    return response.statusCode;
+  Issues(CoffeeRequester mainRequester) : super("issues", new CoffeeHttpRequest("/issues"), mainRequester) {
+    _request["push"] = new Post("");
+    _request["list"] = new Get("");
+  }
+
+  Future<num> pushIssue(String project, String subject, String description, String type) async {
+    CoffeeResponse res = await _request["push"]
+        .execute(body: {"project": project, "subject": subject, "description": description, "tags": type});
+    return res.statusCode;
   }
 }

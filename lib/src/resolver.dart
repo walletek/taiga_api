@@ -4,29 +4,25 @@
 
 part of taiga_api;
 
-class Resolver extends Endpoint with Authenticator {
-  Resolver(String apiUrl) : super(apiUrl, "resolver");
+class Resolver extends CoffeeRequestBehavior {
+  Resolver(CoffeeRequester mainRequester) : super ("resolver", new CoffeeHttpRequest("/resolver"), mainRequester) {
+    _request["getProjectId"] = new Get("");
+    _request["getMilestoneId"] = new Get("");
+  }
 
   Future<num> getProjectId(String name) async {
-    http.Response response = await http
-        .get(getUrl(parameters: {"project": name}), headers: auth.authHeader);
-    if (response.statusCode == HttpStatus.OK) {
-      Map body = JSON.decode(response.body);
-      return body["project"] as num;
-    } else {
-      print({ "status": response.statusCode, "body": response.body });
+    CoffeeResponse res = await _request["getProjectId"].execute(queryParameters:{"project": name});
+    if (res.statusCode == HttpStatus.OK) {
+      return res.decodedBody["project"] as num;
     }
     return null;
   }
 
   Future<Map> getMilestoneId(String project, String name) async {
-    http.Response response = await http
-        .get(getUrl(parameters: {"project": project, "milestone": name}), headers: auth.authHeader);
-    if (response.statusCode == HttpStatus.OK) {
-      return JSON.decode(response.body);
-    } else {
-      print({ "status": response.statusCode, "body": response.body });
-    }
-    return null;
+      CoffeeResponse res = await _request["getProjectId"].execute(queryParameters: {"project": project, "milestone": name});
+      if (res.statusCode == HttpStatus.OK) {
+        return res.decodedBody;
+      }
+      return null;
   }
 }

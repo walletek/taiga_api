@@ -4,9 +4,11 @@
 
 part of taiga_api;
 
-Map<String, String> get defaultHeader => {"Content-Type": "application/json"};
+bool is_debug = false;
 
 class TaigaApi {
+  CoffeeRequester _requester;
+
   Auth auth;
   Resolver resolver;
   Milestones milestones;
@@ -14,43 +16,48 @@ class TaigaApi {
   Issues issues;
   Feedbacks feedbacks;
 
-  TaigaApi({ String apiUrl: "https://api.taiga.io/api/v1" }){
-    auth = new Auth(apiUrl);
-    resolver = new Resolver(apiUrl);
-    milestones = new Milestones(apiUrl);
-    users = new Users(apiUrl);
-    issues = new Issues(apiUrl);
-    feedbacks = new Feedbacks(apiUrl);
+  TaigaApi({String apiUrl: "https://api.taiga.io/api/v1", http.Client client}) {
+    _requester = new CoffeeRequester(middlewares: [
+      new CoffeeMiddleware(request: (CoffeeRequest req) {
+        req.url = "$apiUrl${req.url}";
+        return req;
+      }),
+      new AuthMiddleware(),
+      JSON_CONTENT_TYPE,
+      DECODE_FROM_JSON_MIDDLEWARE,
+      ENCODE_TO_JSON_MIDDLEWARE,
+       new LoggerMiddleware(logger: (CoffeeResponse res) => is_debug ? print(
+          "${res.baseRequest.method.toUpperCase()} [${res.request.url}] [${res.statusCode}]") : null)
+    ], client: client);
 
-
-    resolver.auth = auth;
-    milestones.auth = auth;
-    users.auth = auth;
-    issues.auth = auth;
-    feedbacks.auth = auth;
+    auth = new Auth(_requester);
+    resolver = new Resolver(_requester);
+    milestones = new Milestones(_requester);
+    issues = new Issues(_requester);
+    users = new Users(_requester);
+    feedbacks = new Feedbacks(_requester);
   }
 }
 
-abstract class Endpoint {
-  String apiUrl;
-  String uri;
+abstract class ListBehavior {
+  Get get _listRequest;
 
-  String getUrl({Map parameters}) {
-    String url = "$apiUrl/$uri";
-    if (parameters != null && parameters.isNotEmpty) {
-      url += "?";
-      parameters.forEach((key, value) {
-        url += "${Uri.encodeQueryComponent(key)}=$value&";
-      });
-      //return url.substring(0, url.length - 1);
+  Future<List> list({Map queryParameters}) async {
+    CoffeeResponse res = await _listRequest.execute(queryParameters: queryParameters);
+
+    if (res?.statusCode == HttpStatus.OK) {
+      return res.decodedBody;
     }
-   return url;
+    return null;
   }
-
-  Endpoint(this.apiUrl, this.uri);
-
 }
 
-abstract class Authenticator {
-  Auth auth;
+abstract class CoffeeRequestBehavior {
+  CoffeeRequester _mainRequester;
+  CoffeeHttpRequest _request;
+  String name;
+
+  CoffeeRequestBehavior(this.name, this._request, this._mainRequester) {
+    _mainRequester[name] = _request;
+  }
 }

@@ -4,17 +4,13 @@
 
 part of taiga_api;
 
-class Feedbacks extends Endpoint with Authenticator {
-  Feedbacks(String apiUrl) : super(apiUrl, "feedback");
+class Feedbacks extends CoffeeRequestBehavior {
+  Feedbacks(CoffeeRequester mainRequester) : super("feedback", new CoffeeHttpRequest("/feedback"), mainRequester) {
+    _request["push"] = new Post("");
+  }
 
-  Future <num> pushFeedback(String comment) async {
-    http.Response response = await http.post(getUrl(),
-    body: JSON
-    .encode({"comment": comment}),
-    headers: auth.authHeader);
-    if (response.statusCode != HttpStatus.OK) {
-      print({"status": response.statusCode, "body": response.body});
-    }
-    return response.statusCode;
+  Future<num> pushFeedback(String comment) async {
+    CoffeeResponse res = await _request["push"].execute(body: {"comment": comment});
+    return res.statusCode;
   }
 }
