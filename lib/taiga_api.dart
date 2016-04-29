@@ -17,3 +17,4 @@ part "src/milestones.dart";
 part "src/users.dart";
 part 'src/issue.dart';
 part 'src/feedbacks.dart';
+part 'src/tasks.dart';

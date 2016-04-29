@@ -15,6 +15,7 @@ class TaigaApi {
   Users users;
   Issues issues;
   Feedbacks feedbacks;
+  Tasks tasks;
 
   TaigaApi({String apiUrl: "https://api.taiga.io/api/v1", http.Client client}) {
     _requester = new CoffeeRequester(middlewares: [
@@ -26,8 +27,8 @@ class TaigaApi {
       JSON_CONTENT_TYPE,
       DECODE_FROM_JSON_MIDDLEWARE,
       ENCODE_TO_JSON_MIDDLEWARE,
-       new LoggerMiddleware(logger: (CoffeeResponse res) => is_debug ? print(
-          "${res.baseRequest.method.toUpperCase()} [${res.request.url}] [${res.statusCode}]") : null)
+      new LoggerMiddleware(logger: (CoffeeResponse res) =>
+          is_debug ? print("${res.baseRequest.method.toUpperCase()} [${res.request.url}] [${res.statusCode}]") : null)
     ], client: client);
 
     auth = new Auth(_requester);
@@ -36,13 +37,14 @@ class TaigaApi {
     issues = new Issues(_requester);
     users = new Users(_requester);
     feedbacks = new Feedbacks(_requester);
+    tasks = new Tasks(_requester);
   }
 }
 
 abstract class ListBehavior {
   Get get _listRequest;
 
-  Future<List> list({Map queryParameters}) async {
+  Future<List<dynamic>> list({Map queryParameters}) async {
     CoffeeResponse res = await _listRequest.execute(queryParameters: queryParameters);
 
     if (res?.statusCode == HttpStatus.OK) {
