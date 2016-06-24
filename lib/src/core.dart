@@ -42,13 +42,26 @@ class TaigaApi {
 abstract class ListBehavior {
 	Get get _listRequest;
 
-	Future<List<dynamic>> list({Map queryParameters}) async {
+	Future<List<dynamic>> list({Map queryParameters: const {}}) async {
 		CoffeeResponse res = await _listRequest.execute(queryParameters: queryParameters);
 
-		if (res?.statusCode == HttpStatus.OK) {
+		if (res != null && res.isSuccessful) {
 			return res.decodedBody;
 		}
 		return null;
+	}
+}
+
+abstract class DeleteBehavior {
+	Delete get _deleteRequest;
+
+	Future<num> delete({Map parameters: const {}, Map queryParameters: const {}}) async {
+		CoffeeResponse res = await _deleteRequest.execute(parameters: parameters, queryParameters: queryParameters);
+
+		if (res != null && res.isSuccessful) {
+			return res.statusCode;
+		}
+		return HttpStatus.NOT_FOUND;
 	}
 }
 

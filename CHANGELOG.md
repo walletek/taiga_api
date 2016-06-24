@@ -1,5 +1,9 @@
 # taiga_api changelog
 
+## 0.0.3 
+
+- issue deletion
+
 ## 0.0.2+1
 
 - fix push issue

@@ -98,13 +98,19 @@ class TaigaIssue {
   }
 }
 
-class Issues extends CoffeeRequestBehavior with ListBehavior {
+class Issues extends CoffeeRequestBehavior with ListBehavior, DeleteBehavior {
+	@override
   Get get _listRequest => _request["list"];
+  @override
+  Delete get _deleteRequest => _request["delete"];
 
   Issues(CoffeeRequester mainRequester) : super("issues", new CoffeeHttpRequest("/issues"), mainRequester) {
     _request["push"] = new Post("", decoder: TaigaIssue.decode);
     _request["list"] = new Get("");
+    _request["delete"] = new Delete("/{id}");
   }
+
+	Future<num> deleteById(int id) => delete(parameters: {"id": id});
 
   Future<TaigaIssue> pushIssue(int project, String subject,
       {String description,
