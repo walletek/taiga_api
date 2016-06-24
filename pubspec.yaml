@@ -1,5 +1,5 @@
 name: taiga_api
-version: 0.0.2+1
+version: 0.0.3
 homepage: https://github.com/walletek/taiga_api
 description: library to access taiga api.
 authors:
